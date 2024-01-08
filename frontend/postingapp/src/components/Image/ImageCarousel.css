@@ -1,0 +1,14 @@
+/* Carousel.css */
+
+.carousel-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .carousel-image img {
+    max-width: 50px;
+    max-height: 50px;
+  }
+  
+  /* You can add more styles based on your design preferences */
+  
