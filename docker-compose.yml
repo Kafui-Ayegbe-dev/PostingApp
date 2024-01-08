@@ -1,0 +1,49 @@
+version: '3.9'
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: db1
+    ports:
+      - "8080:3306"
+    volumes:
+      - ./dbfiles:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: "admin"
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-uroot", "-padmin"]
+      timeout: 20s
+      retries: 10
+    stdin_open: true
+    tty: true
+
+  net_node:
+    image: node
+    container_name: n1
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./backend/:/code_server
+    working_dir: /code_server
+    depends_on:
+      mysql:
+        condition: service_healthy
+    command: ["/bin/bash"]
+    stdin_open: true
+    tty: true
+
+  net_react:
+    image: node
+    container_name: r1
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend/:/app
+    working_dir: /app
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    command: ["/bin/bash"]
+    stdin_open: true
+    tty: true
